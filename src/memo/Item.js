@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-// Item コンポーネント
+// アイテムコンポーネント
 function Item(props) {
     // テーブルヘッダ列スタイル
     const th = {

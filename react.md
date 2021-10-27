@@ -4,7 +4,9 @@
 
 前回から引き続き、書籍「React.js&Next.js超入門 第2版 (ISBN:9784798063980) 」を参考に、React の学習を少しづつ進めています。
 
-現在は「Chapter 4 フックで状態管理しよう！」まで進み、これから「Chapter 5 Next.jsでReactをパワーアップ！」にとりかかろうというところです。
+現在は「Chapter 4 フックで状態管理しよう！」まで進み、これから「Chapter 5 Next.jsでReactをパワーアップ！」に取り掛かる予定です。
+
+---
 
 ## 環境
 
@@ -12,6 +14,8 @@
 * PowerShell 7.1.5
 * nvm (node 14.18.1 / npm 6.14.15)
 * Visual Studio Code 1.16.2
+
+---
 
 ## WebアプリとReactのざっくり違い
 
@@ -27,10 +31,15 @@
 
 クライアント側（Webブラウザ）からの要求（リクエスト）に応じて index.html を返却（レスポンス）する。以降は、index.html を起点としてスタイルシートやコンポーネントを読み込み、UIの描画（HTMLの作成）をすべてWebブラウザ側のJavaScriptで行う。表示するデータはその都度、REST API などで問い合わせる。
 
+---
+
 ## 学習したことの整理
 
 コンポーネント (Component) を組み合わせて UI を描画し、属性 (Props)やステート (State) やコンテキスト (Context) でデータを受け渡す。  
 クラスコンポーネントにしかない機能を関数コンポーネントで利用するにはフック (Hooks) を用いる。
+
+React を使うことによるメリットは、ページのリロードはなくエレメント単位で更新（描画）を行うため、「超動的コンテンツを作りやすい」ということだと理解した。  
+これは、コンポーネントを組み合わせて作るため、ページ構成の変更や拡張が行いやすいということにもなる。  
 
 ### コンポーネント
 
@@ -136,7 +145,8 @@ class Sample ectends React.Component {
 
 子のコンポーネントの内部で管理する状態のこと  
 親コンポーネント側から直接参照や更新することはできない  
-state が更新されると、その state を持つコンポーネントが再描画される
+state が更新されると、その state を持つコンポーネントが再描画される（重要）  
+その結果、そこから呼ばれている子コンポーネントも再描画される
 
 ```javascript
 import { Component } from 'react';
@@ -306,6 +316,8 @@ ReactDOM.render(
 reportWebVitals();
 ```
 
+---
+
 ## 簡易メモアプリを作る
 
 * アクセスすると index.html が読み込まれる。
@@ -334,9 +346,12 @@ import AddForm from './AddForm';
 import FindForm from './FindForm';
 import DelForm from './DelForm';
 
+// メモページコンポーネント
 function MemoPage() {
+    // モード
     const [mode, setMode] = usePersist('mode', 'default');
 
+    // JSXを返却
     return (
         <div>
             <h5 className="my-3">mode: {mode}</h5>
@@ -363,8 +378,11 @@ export default MemoPage;
 import React, { useState, useEffect } from 'react';
 import usePersist from '../Persist';
 
+// 追加フォームコンポーネント
 function AddForm(props) {
+    // メモ
     const [memo, setMemo] = usePersist("memo", []);
+    // メモのメッセージ
     const [message, setMessage] = useState('');
 
     // メッセージを変更した際に呼び出される関数
@@ -388,6 +406,7 @@ function AddForm(props) {
         setMessage('');
     };
 
+    // メッセージを登録するコンポーネントのJSXを返却
     return (
         <form onSubmit={doAction} action="">
             <div className="form-group row">
@@ -409,29 +428,44 @@ export default AddForm;
 import React, { useState, useEffect } from 'react';
 import usePersist from '../Persist';
 
+// 検索フォームコンポーネント
 function FindForm(props) {
+    // メモ
     const [memo, setMemo] = usePersist("memo", []);
+    // 検索したメモ
     const [fmemo, setFMemo] = usePersist("findMemo", []);
+    // 検索文字列
     const [message, setMessage] = useState('');
+    // モード
     const [mode, setMode] = usePersist("mode", 'find');
 
+    // 検索文字列を変更した際に呼び出される関数
     const doChange = (e) => {
+        // message ステートを更新（検索文字列を設定）
         setMessage(e.target.value);
     }
 
+    // submit した際に呼び出される関数
     const doAction = (e) => {
+        // 検索文字列が未入力であればモードをリセット
         if (message == '') {
+            // mode ステートを更新
             setMode('default');
             return;
         };
+        // 指定した検索文字列を含むメッセージを抽出
         let res = memo.filter((item, key) => {
             return item.message.includes(message);
         });
+        // fmemo ステートを更新（検索結果を設定）
         setFMemo(res);
+        // mode ステートを更新
         setMode('find');
+        // message ステートを更新（検索文字列を初期化）
         setMessage('');
     }
 
+    // メモを検索するコンポーネントのJSXを返却
     return (
         <form onSubmit={doAction}>
             <div className="form-group row">
@@ -453,28 +487,39 @@ export default FindForm;
 import React, { useState, useEffect } from 'react';
 import usePersist from '../Persist';
 
+// 削除フォームコンポーネント
 function DelForm(props) {
+    // メモ
     const [memo, setMemo] = usePersist("memo", []);
+    // 削除するメッセージの番号
     const [num, setNum] = useState(0);
 
+    // メッセージの選択を切り替えた際に呼び出される関数
     const doChange = (e) => {
+        // num ステートを更新（削除対象のメッセージの番号を設定）
         setNum(e.target.value);
     };
 
+    // submit した際に呼び出される関数
     const doAction = (e) => {
+        // 削除対象のメッセージの番号以外のメッセージを抽出
         let res = memo.filter((item, key)=> {
             return key != num;
         });
+        // memo ステートを更新（削除対象のメッセージの番号以外のメッセージを更新）
         setMemo(res);
+        // num ステートを更新（削除対象のメッセージの番号を初期化）
         setNum(0);
     };
 
+    // メモを option タグに展開
     let items = memo.map((value, key) => (
         <option key={key} value={key}>
             {value.message.substring(0, 10)}
         </option>
     ));
 
+    // メッセージを削除するコンポーネントのJSXを返却
     return (
         <form onSubmit={doAction}>
             <div className="form-group row">
@@ -497,13 +542,18 @@ import React, { useState, useEffect } from 'react';
 import usePersist from '../Persist';
 import Item from './Item';
 
+// メモコンポーネント
 function Memo(props) {
+    // メモ
     const [memo, setMemo] = usePersist("memo", []);
+    // 検索したメモ
     const [fmemo, setFMemo] = usePersist("findMemo", []);
+    // モード
     const [mode, setMode] = usePersist("mode", "default");
 
+    // メモデータ
     let data = [];
-
+    // モードに応じて表示する内容を切り替える
     switch (mode){
         case 'default':
             data = memo.map((value,key)=>(
@@ -522,6 +572,7 @@ function Memo(props) {
             ));
     }
 
+    // JSXを返却
     return (
         <table className="table mt-4">
             <tbody>{data}</tbody>
@@ -537,7 +588,7 @@ export default Memo;
 ```javascript
 import React, { useState, useEffect } from 'react';
 
-// Item コンポーネント
+// アイテムコンポーネント
 function Item(props) {
     // テーブルヘッダ列スタイル
     const th = {
@@ -605,4 +656,10 @@ function usePersist(_key, _value) {
 }
 
 export default usePersist;
+```
+
+### メモアプリの実行
+
+```powershell
+
 ```

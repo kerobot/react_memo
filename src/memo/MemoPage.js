@@ -4,9 +4,12 @@ import AddForm from './AddForm';
 import FindForm from './FindForm';
 import DelForm from './DelForm';
 
+// メモページコンポーネント
 function MemoPage() {
+    // モード
     const [mode, setMode] = usePersist('mode', 'default');
 
+    // JSXを返却
     return (
         <div>
             <h5 className="my-3">mode: {mode}</h5>

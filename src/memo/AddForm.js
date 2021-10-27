@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import usePersist from '../Persist';
 
+// 追加フォームコンポーネント
 function AddForm(props) {
+    // メモ
     const [memo, setMemo] = usePersist("memo", []);
+    // メモのメッセージ
     const [message, setMessage] = useState('');
 
     // メッセージを変更した際に呼び出される関数
@@ -26,6 +29,7 @@ function AddForm(props) {
         setMessage('');
     };
 
+    // メッセージを登録するコンポーネントのJSXを返却
     return (
         <form onSubmit={doAction} action="">
             <div className="form-group row">
