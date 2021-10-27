@@ -320,6 +320,19 @@ reportWebVitals();
 
 ## 簡易メモアプリを作る
 
+### プロジェクトの作成
+
+```powershell
+> nvm install 14.18.1
+> nvm use 14.18.1
+> node --version
+> npm --version
+> npx create-react-app react_memo
+> cd react_memo
+```
+
+### プロジェクトの概要
+
 * アクセスすると index.html が読み込まれる。
 * index.html を読み込む際に、index.js が読み込まれて実行される。
 * index.js のなかで App コンポーネントが読み込まれて表示される。
@@ -658,8 +671,16 @@ function usePersist(_key, _value) {
 export default usePersist;
 ```
 
-### メモアプリの実行
+### プロジェクトの実行
 
 ```powershell
-
+> nvm install 14.18.1
+> nvm use 14.18.1
+> node --version
+> npm --version
+> git clone https://github.com/kerobot/react_memo.git react_memo
+> cd react_memo
+> npm install
+> npm audit fix
+> npm start
 ```
